@@ -44,7 +44,17 @@ class GeometryCast implements CastsAttributes
       return $this->className::fromWkt($wkt, $srid);
     }
 
-    return $this->className::fromWkb($value);
+    // $wktAndSrid = DB::table($model->getTable())
+    //         ->selectRaw("{$key}.AsTextZM() as wkt, {$key}.STSrid as srid")
+    //         ->where($model->getKeyName(), '=', $attributes[$model->getKeyName()])
+    //         ->first();
+    // return $this->className::fromWkt($wktAndSrid->wkt, $wktAndSrid->srid);
+
+    $wkbAndSrid = DB::table($model->getTable())
+            ->selectRaw("{$key}.AsBinaryZM() as wkb, {$key}.STSrid as srid")
+            ->where($model->getKeyName(), '=', $attributes[$model->getKeyName()])
+            ->first();
+    return $this->className::fromWkb($wkbAndSrid->wkb, $wkbAndSrid->srid);
   }
 
   /**

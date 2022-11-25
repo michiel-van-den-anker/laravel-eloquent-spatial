@@ -65,13 +65,13 @@ abstract class Geometry implements Castable, Arrayable, Jsonable, JsonSerializab
    *
    * @throws InvalidArgumentException
    */
-  public static function fromWkb(string $wkb): static
+  public static function fromWkb(string $wkb, int $srid): static
   {
-    $srid = substr($wkb, 0, 4);
+    // $srid = substr($wkb, 0, 4);
     // @phpstan-ignore-next-line
-    $srid = unpack('L', $srid)[1];
+    // $srid = unpack('L', $srid)[1];
 
-    $wkb = substr($wkb, 4);
+    // $wkb = substr($wkb, 4);
 
     $geometry = Factory::parse($wkb);
     $geometry->srid = $srid;
