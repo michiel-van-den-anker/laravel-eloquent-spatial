@@ -9,6 +9,7 @@ use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Traits\Macroable;
 use InvalidArgumentException;
 use JsonException;
@@ -189,5 +190,13 @@ abstract class Geometry implements Castable, Arrayable, Jsonable, JsonSerializab
   public static function castUsing(array $arguments): CastsAttributes
   {
     return new GeometryCast(static::class);
+  }
+
+  /**
+   * @return Point
+   */
+  public function getCenter(): Point
+  {
+    return Geometry::fromWKt(DB::select(DB::raw("DECLARE @g geography = '{$this->toWkt()}'; SELECT @g.EnvelopeCenter().ToString() as center;"))[0]->center, 4326);
   }
 }
