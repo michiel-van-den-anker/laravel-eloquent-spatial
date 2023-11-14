@@ -286,14 +286,14 @@ class SpatialBuilder extends Builder
     return $this;
   }
 
-  protected function toExpression(Geometry|string $geometryOrColumn): Expression
+  protected function toExpression(Geometry|string $geometryOrColumn): string
   {
     if ($geometryOrColumn instanceof Geometry) {
       $wkt = $geometryOrColumn->toWkt();
 
-      return DB::raw("geography::STGeomFromText('{$wkt}', {$geometryOrColumn->srid})");
+      return DB::raw("geography::STGeomFromText('{$wkt}', {$geometryOrColumn->srid})")->getValue(DB::connection()->getQueryGrammar());
     }
 
-    return DB::raw($this->getQuery()->getGrammar()->wrap($geometryOrColumn));
+    return DB::raw($this->getQuery()->getGrammar()->wrap($geometryOrColumn))->getValue(DB::connection()->getQueryGrammar());
   }
 }
